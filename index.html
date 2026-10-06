@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10151d">
+<title>Nosso Casamento Bonito</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Figtree:wght@400;500;600&display=swap">
+<style>
+/* Layout: one narrow column. Countdown masthead, summary tiles, add form, task list. Settings (sync) in a collapsible block at the bottom. */
+:root{
+  --bg:#f2f4f7; --surface:#ffffff; --ink:#18212e; --muted:#667085; --line:#dde2ea;
+  --accent:#233f6b; --accent-ink:#ffffff;
+  --radek:#2f5da8; --radek-bg:#e4ecf8;
+  --patrick:#a63f77; --patrick-bg:#f6e3ed;
+  --both-bg:#e7e9ee; --other-bg:#ece9df;
+  --bad:#b42318; --bad-bg:#fde8e6; --ok:#1a7a4c; --ok-bg:#e0f3e8; --warn:#9a5b00; --warn-bg:#fdf0d5;
+  --font-display:"Instrument Serif",Georgia,serif;
+  --font-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#10151d; --surface:#18202b; --ink:#e8ecf2; --muted:#98a2b3; --line:#2a3443;
+  --accent:#8fb0ea; --accent-ink:#10151d;
+  --radek:#8fb0ea; --radek-bg:#1f2f4a; --patrick:#ec8fba; --patrick-bg:#40202f;
+  --both-bg:#262e3b; --other-bg:#2d2c26;
+  --bad:#ff8f84; --bad-bg:#43201d; --ok:#6fd1a0; --ok-bg:#163225; --warn:#f2c26b; --warn-bg:#3b2e12;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10151d; --surface:#18202b; --ink:#e8ecf2; --muted:#98a2b3; --line:#2a3443;
+  --accent:#8fb0ea; --accent-ink:#10151d;
+  --radek:#8fb0ea; --radek-bg:#1f2f4a; --patrick:#ec8fba; --patrick-bg:#40202f;
+  --both-bg:#262e3b; --other-bg:#2d2c26;
+  --bad:#ff8f84; --bad-bg:#43201d; --ok:#6fd1a0; --ok-bg:#163225; --warn:#f2c26b; --warn-bg:#3b2e12;
+  color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.45;padding-inline:16px;padding-block:28px 64px}
+.wrap{max-width:860px;margin-inline:auto;display:flex;flex-direction:column;gap:22px}
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+h1{font-family:var(--font-display);font-weight:400;font-size:clamp(2.2rem,6vw,3.2rem);line-height:1;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.names{color:var(--muted);margin-top:6px;font-size:.95rem}
+.count{text-align:right}
+.count b{font-family:var(--font-display);font-weight:400;font-size:3.4rem;line-height:.9;font-variant-numeric:tabular-nums;display:block}
+.count span{color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.09em}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;min-width:0}
+.tile b{font-size:1.6rem;font-weight:600;font-variant-numeric:tabular-nums;display:block;line-height:1.1}
+.tile span{color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em}
+.tile.bad b{color:var(--bad)}
+.bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+form.add{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px}
+form.add .full{grid-column:1/-1}
+label{display:flex;flex-direction:column;gap:4px;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);min-width:0}
+input,textarea,select,button{font:inherit;color:inherit}
+input[type=text],input[type=date],input[type=url],textarea,select{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 10px;width:100%;min-width:0;text-transform:none;letter-spacing:0;font-size:.95rem;color:var(--ink)}
+textarea{resize:vertical;min-height:40px}
+input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;padding:10px 18px;font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+.addrow{display:flex;justify-content:flex-end}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.seg{display:flex;gap:4px;flex-wrap:wrap}
+.seg button{background:transparent;border:1px solid var(--line);border-radius:999px;padding:5px 13px;font-size:.88rem;cursor:pointer;color:var(--muted)}
+.seg button[aria-pressed=true]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.toolbar select{width:auto;padding:6px 10px}
+ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+li.task{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;grid-template-columns:auto 1fr auto;gap:6px 12px;align-items:start}
+li.task.done .topic{text-decoration:line-through;color:var(--muted)}
+li.task.late{border-color:var(--bad)}
+.chk{width:22px;height:22px;margin-top:3px;accent-color:var(--ok);cursor:pointer}
+.main{min-width:0;display:flex;flex-direction:column;gap:8px}
+.topic{font-weight:600;font-size:1.02rem;background:transparent;border:1px solid transparent;border-radius:6px;padding:2px 6px;margin-left:-6px;width:calc(100% + 6px)}
+.topic:hover{border-color:var(--line)}
+.meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{border-radius:999px;padding:3px 11px;font-size:.82rem;font-weight:600;border:0;background:var(--other-bg);color:var(--ink);width:auto;min-width:0;max-width:100%}
+.chip.radek{background:var(--radek-bg);color:var(--radek)}
+.chip.patrick{background:var(--patrick-bg);color:var(--patrick)}
+.chip.both{background:var(--both-bg)}
+.due{background:transparent;border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:.84rem;width:auto;font-variant-numeric:tabular-nums}
+.when{font-size:.82rem;font-weight:600;border-radius:999px;padding:3px 10px}
+.when.late{background:var(--bad-bg);color:var(--bad)}
+.when.soon{background:var(--warn-bg);color:var(--warn)}
+.when.ok{background:var(--both-bg);color:var(--muted)}
+.when.done{background:var(--ok-bg);color:var(--ok)}
+.note{background:transparent;border:1px solid transparent;border-radius:6px;padding:4px 6px;margin-left:-6px;width:calc(100% + 6px);color:var(--muted);font-size:.9rem;min-height:30px;resize:none;overflow:hidden}
+.note:hover,.note:focus{border-color:var(--line);background:var(--bg)}
+.del{background:transparent;border:0;color:var(--muted);cursor:pointer;padding:4px 8px;border-radius:6px;font-size:.85rem}
+.del:hover{color:var(--bad)}
+.del.armed{background:var(--bad-bg);color:var(--bad);font-weight:600}
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:28px;text-align:center;color:var(--muted)}
+.status{color:var(--muted);font-size:.85rem;text-align:center}
+.example{font-size:.72rem;color:var(--muted);border:1px dashed var(--line);border-radius:4px;padding:0 5px}
+details.settings{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+details.settings summary{cursor:pointer;font-weight:600}
+.settings .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.settings .grid .full{grid-column:1/-1}
+.settings p{color:var(--muted);font-size:.88rem;margin:8px 0 0}
+.settings .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.sync{font-size:.82rem;color:var(--muted)}
+.sync.ok{color:var(--ok)} .sync.err{color:var(--bad)}
+@media (max-width:620px){
+  form.add{grid-template-columns:1fr 1fr}
+  li.task{grid-template-columns:auto 1fr}
+  .del{grid-column:2;justify-self:start;margin-left:-8px}
+  .settings .grid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Nosso Casamento Bonito</h1>
+      <div class="names">Radek &amp; Patrick · 6 November 2026</div>
+    </div>
+    <div class="count"><b id="days">–</b><span id="dayslabel">days to go</span></div>
+  </header>
+
+  <section class="tiles" aria-label="Summary">
+    <div class="tile"><b id="sOpen">0</b><span>Open</span></div>
+    <div class="tile bad" id="tLate"><b id="sLate">0</b><span>Overdue</span></div>
+    <div class="tile"><b id="sDone">0</b><span>Done</span><div class="bar"><i id="bar"></i></div></div>
+  </section>
+
+  <form class="add" id="addForm" autocomplete="off">
+    <label class="full">Topic
+      <input type="text" id="fTopic" placeholder="e.g. Book the photographer" required maxlength="200">
+    </label>
+    <label>Who cares
+      <input type="text" id="fOwner" list="owners" value="Radek" maxlength="40">
+    </label>
+    <label>Till when
+      <input type="date" id="fDue">
+    </label>
+    <label class="full">Comments
+      <textarea id="fNote" rows="2" maxlength="2000" placeholder="Details, links, phone numbers…"></textarea>
+    </label>
+    <div class="addrow full"><button class="btn" id="addBtn" type="submit">Add task</button></div>
+    <datalist id="owners"><option value="Radek"><option value="Patrick"><option value="Both"></datalist>
+  </form>
+
+  <div class="toolbar">
+    <div class="seg" id="statusSeg" role="group" aria-label="Show">
+      <button type="button" data-v="open" aria-pressed="true">Open</button>
+      <button type="button" data-v="late" aria-pressed="false">Overdue</button>
+      <button type="button" data-v="done" aria-pressed="false">Done</button>
+      <button type="button" data-v="all" aria-pressed="false">All</button>
+    </div>
+    <label style="flex-direction:row;align-items:center;gap:8px">Who
+      <select id="fWho"><option value="">Everyone</option></select>
+    </label>
+  </div>
+
+  <ul id="list" aria-live="polite"></ul>
+  <div class="status" id="status"></div>
+
+  <details class="settings" id="settings">
+    <summary>Sync between Radek and Patrick</summary>
+    <p>Tasks are saved in this browser. To share one list across both phones, enter the same database address and wedding key on each device. Leave empty to stay local.</p>
+    <div class="grid">
+      <label class="full">Database address (Firebase Realtime Database URL)
+        <input type="url" id="sUrl" placeholder="https://your-project-default-rtdb.europe-west1.firebasedatabase.app">
+      </label>
+      <label class="full">Wedding key (a long private phrase, same on both devices)
+        <input type="text" id="sKey" placeholder="e.g. rb-2026-nov-6-x7k29q" autocomplete="off">
+      </label>
+    </div>
+    <div class="row">
+      <button class="btn" type="button" id="sSave">Save and sync</button>
+      <button class="btn ghost" type="button" id="sExport">Export backup (JSON)</button>
+      <label class="btn ghost" style="flex-direction:row;text-transform:none;letter-spacing:0;font-size:inherit;cursor:pointer">Import backup<input type="file" id="sImport" accept="application/json" hidden></label>
+    </div>
+    <p class="sync" id="syncMsg">Local only.</p>
+  </details>
+</div>
+
+<script>
+(function(){
+  var WEDDING = new Date(2026, 10, 6);
+  var LS_TASKS='ncb.tasks.v1', LS_CFG='ncb.sync.v1', LS_SEEDED='ncb.seeded.v1';
+  var state={tasks:{}, status:'open', who:''};
+  var cfg={url:'',key:''}, armed=null, syncTimer=null, syncing=false, pending={};
+
+  function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+  function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+  function today(){var d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
+  function parse(s){if(!s)return null;var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2]);}
+  function diffDays(a,b){return Math.round((a-b)/864e5);}
+  function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
+  function ownerClass(o){var k=(o||'').trim().toLowerCase();return k==='radek'?'radek':k==='patrick'?'patrick':(k==='both'||k==='beide'||k==='juntos')?'both':'';}
+  function uid(){return 't'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+  function $(id){return document.getElementById(id);}
+
+  var dl=diffDays(WEDDING,today());
+  $('days').textContent=dl>=0?dl:'0';
+  $('dayslabel').textContent=dl===1?'day to go':dl<=0?'today!':'days to go';
+
+  // ---------- storage ----------
+  function load(){
+    try{var raw=lsGet(LS_TASKS); if(raw) state.tasks=JSON.parse(raw)||{};}catch(e){state.tasks={};}
+    try{var c=lsGet(LS_CFG); if(c) cfg=Object.assign(cfg,JSON.parse(c));}catch(e){}
+  }
+  function persist(){lsSet(LS_TASKS,JSON.stringify(state.tasks));}
+  function put(id,patch){
+    var t=state.tasks[id]||{id:id}; Object.assign(t,patch); t.updatedAt=Date.now(); state.tasks[id]=t;
+    pending[id]=true; persist(); render(); scheduleSync(800);
+  }
+  function seed(){
+    if(lsGet(LS_SEEDED)||Object.keys(state.tasks).length||cfg.url) return;
+    var ex=[
+      ['Confirm registry office appointment and required documents','Radek','2026-10-09','Check which papers the registrar still needs.'],
+      ['Finalise guest list','Both','2026-10-10','Count confirmed vs. open replies.'],
+      ['Book photographer','Patrick','2026-10-12',''],
+      ['Restaurant / catering: menu and headcount','Patrick','2026-10-18','Mind dietary needs of guests.'],
+      ['Outfits: final fitting','Both','2026-10-20',''],
+      ['Rings: pick up and check size','Radek','2026-10-25',''],
+      ['Music / playlist','Radek','2026-10-28',''],
+      ['Seating plan and place cards','Both','2026-11-01',''],
+      ['Write vows / speeches','Both','2026-11-03','']
+    ];
+    ex.forEach(function(r,i){var id='ex'+i;state.tasks[id]={id:id,topic:r[0],owner:r[1],due:r[2],note:r[3],done:false,example:true,createdAt:i,updatedAt:1};});
+    persist(); lsSet(LS_SEEDED,'1');
+  }
+
+  // ---------- sync (Firebase Realtime Database REST) ----------
+  function base(){
+    var u=(cfg.url||'').trim().replace(/\/+$/,''), k=encodeURIComponent((cfg.key||'').trim());
+    if(!u||!k) return null; return u+'/wedding/'+k+'/tasks';
+  }
+  function setSync(msg,cls){var m=$('syncMsg'); m.textContent=msg; m.className='sync '+(cls||'');}
+  function scheduleSync(ms){ if(!base()) return; clearTimeout(syncTimer); syncTimer=setTimeout(sync,ms||0); }
+  async function sync(){
+    var b=base(); if(!b||syncing) return; syncing=true; setSync('Syncing…');
+    try{
+      var r=await fetch(b+'.json'); if(!r.ok) throw new Error('HTTP '+r.status);
+      var remote=(await r.json())||{}, push={}, changed=false;
+      Object.keys(remote).forEach(function(id){
+        var rt=remote[id], lt=state.tasks[id];
+        if(!lt || (rt.updatedAt||0)>(lt.updatedAt||0)){ state.tasks[id]=Object.assign({id:id},rt); changed=true; }
+      });
+      Object.keys(state.tasks).forEach(function(id){
+        var lt=state.tasks[id], rt=remote[id];
+        if(!rt || (lt.updatedAt||0)>(rt.updatedAt||0) || pending[id]) push[id]=lt;
+      });
+      if(Object.keys(push).length){
+        var w=await fetch(b+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(push)});
+        if(!w.ok) throw new Error('HTTP '+w.status);
+      }
+      pending={}; if(changed){persist(); render();}
+      setSync('Synced '+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),'ok');
+    }catch(e){ setSync('Sync failed ('+(e&&e.message||'error')+'). Check address and database rules. Your data is safe in this browser.','err'); }
+    syncing=false;
+  }
+
+  // ---------- rendering ----------
+  function liveTasks(){return Object.keys(state.tasks).map(function(k){return state.tasks[k];}).filter(function(t){return !t.deleted;});}
+  function isLate(t){var d=parse(t.due);return !t.done&&d&&d<today();}
+  function whenBadge(t){
+    if(t.done) return ['done','Done'];
+    var d=parse(t.due); if(!d) return null; var n=diffDays(d,today());
+    if(n<0) return ['late',(-n)+(n===-1?' day':' days')+' overdue'];
+    if(n===0) return ['soon','Today'];
+    if(n<=7) return ['soon','In '+n+(n===1?' day':' days')];
+    return ['ok','In '+n+' days'];
+  }
+  function sorted(list){return list.slice().sort(function(a,b){
+    if(!!a.done!==!!b.done) return a.done?1:-1;
+    var da=a.due||'9999-99-99', db=b.due||'9999-99-99'; if(da!==db) return da<db?-1:1;
+    return (a.createdAt||0)-(b.createdAt||0);});}
+  function visible(){return sorted(liveTasks()).filter(function(t){
+    if(state.who&&(t.owner||'').trim().toLowerCase()!==state.who.toLowerCase()) return false;
+    if(state.status==='open') return !t.done; if(state.status==='done') return !!t.done;
+    if(state.status==='late') return isLate(t); return true;});}
+  function autosize(t){t.style.height='auto';t.style.height=Math.max(30,t.scrollHeight+2)+'px';}
+
+  function render(){
+    var ae=document.activeElement;
+    if(ae&&ae.dataset&&ae.dataset.dirty==='1') return;
+    var all=liveTasks(), open=all.filter(function(t){return !t.done;}), late=all.filter(isLate), done=all.length-open.length;
+    $('sOpen').textContent=open.length; $('sLate').textContent=late.length; $('sDone').textContent=done+' / '+all.length;
+    $('bar').style.width=(all.length?Math.round(done/all.length*100):0)+'%';
+    $('tLate').style.opacity=late.length?1:.6;
+
+    var names={}; all.forEach(function(t){var o=(t.owner||'').trim(); if(o) names[o.toLowerCase()]=o;});
+    var sel=$('fWho'); sel.textContent='';
+    var o0=el('option',null,'Everyone'); o0.value=''; sel.appendChild(o0);
+    Object.keys(names).sort().forEach(function(k){var o=el('option',null,names[k]);o.value=names[k];sel.appendChild(o);});
+    sel.value=state.who;
+    var dlist=$('owners'), have={radek:1,patrick:1,both:1};
+    Array.prototype.forEach.call(dlist.children,function(o){have[o.value.toLowerCase()]=1;});
+    Object.keys(names).forEach(function(k){if(!have[k]){var op=document.createElement('option');op.value=names[k];dlist.appendChild(op);have[k]=1;}});
+
+    var ul=$('list'); ul.textContent=''; var rows=visible();
+    if(!rows.length) ul.appendChild(el('li','empty',all.length?'Nothing here with this filter.':'No tasks yet. Add the first one above: a topic, who takes care of it and by when.'));
+    rows.forEach(function(t){
+      var li=el('li','task'+(t.done?' done':'')+(isLate(t)?' late':''));
+      var chk=el('input','chk'); chk.type='checkbox'; chk.checked=!!t.done; chk.setAttribute('aria-label','Mark done: '+t.topic);
+      chk.addEventListener('change',function(){put(t.id,{done:chk.checked});});
+      li.appendChild(chk);
+      var main=el('div','main');
+      var topic=el('input','topic'); topic.type='text'; topic.value=t.topic||''; topic.maxLength=200; topic.setAttribute('aria-label','Topic');
+      topic.addEventListener('input',function(){topic.dataset.dirty='1';});
+      topic.addEventListener('change',function(){topic.dataset.dirty='';var v=topic.value.trim(); if(v&&v!==t.topic) put(t.id,{topic:v}); else render();});
+      topic.addEventListener('blur',function(){if(topic.dataset.dirty){topic.dataset.dirty='';render();}});
+      main.appendChild(topic);
+      var meta=el('div','meta');
+      var own=el('input','chip '+ownerClass(t.owner)); own.type='text'; own.value=t.owner||''; own.setAttribute('list','owners'); own.maxLength=40; own.placeholder='Who?'; own.size=Math.max(6,(t.owner||'').length+2); own.setAttribute('aria-label','Who cares');
+      own.addEventListener('input',function(){own.dataset.dirty='1';});
+      own.addEventListener('change',function(){own.dataset.dirty='';put(t.id,{owner:own.value.trim()});});
+      own.addEventListener('blur',function(){if(own.dataset.dirty){own.dataset.dirty='';render();}});
+      meta.appendChild(own);
+      var due=el('input','due'); due.type='date'; due.value=t.due||''; due.setAttribute('aria-label','Till when');
+      due.addEventListener('change',function(){put(t.id,{due:due.value||''});});
+      meta.appendChild(due);
+      var wb=whenBadge(t); if(wb) meta.appendChild(el('span','when '+wb[0],wb[1]));
+      if(t.example) meta.appendChild(el('span','example','example'));
+      main.appendChild(meta);
+      var note=el('textarea','note'); note.value=t.note||''; note.rows=1; note.maxLength=2000; note.placeholder='Add a comment…'; note.setAttribute('aria-label','Comments');
+      note.addEventListener('input',function(){note.dataset.dirty='1';autosize(note);});
+      note.addEventListener('change',function(){note.dataset.dirty='';put(t.id,{note:note.value});});
+      note.addEventListener('blur',function(){if(note.dataset.dirty){note.dataset.dirty='';render();}});
+      main.appendChild(note);
+      li.appendChild(main);
+      var del=el('button','del',armed===t.id?'Really delete?':'Delete'); del.type='button';
+      if(armed===t.id) del.classList.add('armed');
+      del.addEventListener('click',function(){
+        if(armed===t.id){armed=null; put(t.id,{deleted:true});}
+        else{armed=t.id; render(); setTimeout(function(){if(armed===t.id){armed=null;render();}},4000);}
+      });
+      li.appendChild(del); ul.appendChild(li); autosize(note);
+    });
+    $('status').textContent=rows.length+' shown · '+all.length+' total';
+  }
+
+  // ---------- wiring ----------
+  $('statusSeg').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return; state.status=b.dataset.v;
+    Array.prototype.forEach.call(this.children,function(c){c.setAttribute('aria-pressed',c===b?'true':'false');}); render();
+  });
+  $('fWho').addEventListener('change',function(e){state.who=e.target.value;render();});
+  $('addForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    var topic=$('fTopic').value.trim(); if(!topic) return;
+    var id=uid();
+    state.tasks[id]={id:id,createdAt:Date.now()};
+    put(id,{topic:topic,owner:$('fOwner').value.trim(),due:$('fDue').value||'',note:$('fNote').value.trim(),done:false});
+    $('fTopic').value='';$('fDue').value='';$('fNote').value='';$('fTopic').focus();
+  });
+  $('sSave').addEventListener('click',function(){
+    cfg.url=$('sUrl').value.trim(); cfg.key=$('sKey').value.trim(); lsSet(LS_CFG,JSON.stringify(cfg));
+    if(base()){ Object.keys(state.tasks).forEach(function(id){pending[id]=true;}); sync(); } else setSync('Local only.');
+  });
+  $('sExport').addEventListener('click',function(){
+    var blob=new Blob([JSON.stringify(state.tasks,null,2)],{type:'application/json'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='casamento-backup-'+new Date().toISOString().slice(0,10)+'.json';
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
+  });
+  $('sImport').addEventListener('change',function(e){
+    var f=e.target.files&&e.target.files[0]; if(!f) return;
+    var r=new FileReader();
+    r.onload=function(){try{
+      var d=JSON.parse(r.result); var n=0;
+      Object.keys(d).forEach(function(id){var t=d[id]; if(t&&typeof t==='object'&&t.topic!==undefined){t.id=id;t.updatedAt=Date.now();state.tasks[id]=t;pending[id]=true;n++;}});
+      persist(); render(); scheduleSync(300); setSync('Imported '+n+' tasks.','ok');
+    }catch(err){setSync('That file is not a valid backup.','err');}};
+    r.readAsText(f); e.target.value='';
+  });
+  document.addEventListener('visibilitychange',function(){if(!document.hidden) scheduleSync(0);});
+  setInterval(function(){if(!document.hidden) scheduleSync(0);},30000);
+
+  load(); seed();
+  $('sUrl').value=cfg.url||''; $('sKey').value=cfg.key||'';
+  if(!base()) setSync('Local only.');
+  render(); scheduleSync(0);
+})();
+</script>
+</body>
+</html>
